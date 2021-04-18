@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Notebooks checkpoints
+.ipynb_checkpoints
+
+# IntelliJ
+.idea/
+
+data/
+
+# Environment variables
+.env
+
+# Desktop Service Store
+.DS_Store
+
+# Files to keep
+!.gitkeep

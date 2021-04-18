@@ -1,0 +1,42 @@
+version: 2.1
+jobs:
+  test-ci-base: &test-ci-base
+    environment:
+      PROJECT_ROOT: project
+    docker:
+      - image: python:3.6.6
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-python-deps-{{ .Branch }}-{{ checksum "requirements.txt" }}
+      - run:
+          name: Install Python dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            make install
+      - save_cache:
+          key: v1-python-deps-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            make $CIRCLE_JOB
+      - store_artifacts:
+          path: .pytest-result
+      - store_test_results:
+          path: .pytest-result
+
+  test-ci-lint: *test-ci-base
+  test-ci-unit: *test-ci-base
+
+
+workflows:
+   build-and-test:
+    jobs:
+      - test-ci-lint
+      - test-ci-unit:
+          requires:
+            - test-ci-lint
